@@ -19,10 +19,10 @@
         state: directory
         path: /opt/jdk/11.0.16
       tags: java
-    - name: create java_home directory for unarchiving
-      file:
-        path: /opt/jdk/11.0.16
-        state: directory
+    # - name: create java_home directory for unarchiving
+    #   file:
+    #     path: /opt/jdk/11.0.16
+    #     state: directory
     - name: Extract java in the installation directory
       become: true
       ansible.builtin.unarchive:
