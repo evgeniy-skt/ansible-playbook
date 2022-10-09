@@ -15,22 +15,18 @@
       tags: java
     - name: Ensure installation dir exists
       become: true
-      ansible.builtin.file:
+      file:
         state: directory
-        path: /opt/jdk/11.0.16
+        path: "{{ java_home }}"
       tags: java
-    # - name: create java_home directory for unarchiving
-    #   file:
-    #     path: /opt/jdk/11.0.16
-    #     state: directory
     - name: Extract java in the installation directory
       become: true
-      ansible.builtin.unarchive:
+      unarchive:
         copy: false
         src: /tmp/jdk-{{ java_jdk_version }}.tar.gz
-        dest: /opt/jdk/11.0.16
+        dest: "{{ java_home }}"
         extra_opts: [--strip-components=1]
-        creates: /opt/jdk/11.0.16/bin/java"
+        creates: "{{ java_home }}/bin/java"
       tags:
         - java
     - name: Export environment variables
@@ -44,8 +40,8 @@
   tasks:
     - name: Upload tar.gz Elasticsearch from remote URL
       ansible.builtin.get_url:
-        url: "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ elastic_version }}-linux-x86_64.tar.gz"
-        dest: "/tmp/elasticsearch-{{ elastic_version }}-linux-x86_64.tar.gz"
+        url: "https://github.com/elastic/elasticsearch/archive/refs/tags/v{{ elastic_version }}.tar.gz"
+        dest: "/tmp/elasticsearch-{{ elastic_version }}.tar.gz"
         mode: 0755
         timeout: 60
         force: true
@@ -62,7 +58,7 @@
       become: true
       ansible.builtin.unarchive:
         copy: false
-        src: "/tmp/elasticsearch-{{ elastic_version }}-linux-x86_64.tar.gz"
+        src: "/tmp/elasticsearch-{{ elastic_version }}.tar.gz"
         dest: "{{ elastic_home }}"
         extra_opts: [--strip-components=1]
         creates: "{{ elastic_home }}/bin/elasticsearch"
@@ -79,8 +75,8 @@
   tasks:
     - name: Upload tar.gz kibana from remote URL
       ansible.builtin.get_url:
-        url: "https://artifacts.elastic.co/downloads/kibana/kibana-{{ kibana_version }}-linux-x86_64.tar.gz"
-        dest: "/tmp/kibana-{{ kibana_version }}-linux-x86_64.tar.gz"
+        url: "https://github.com/elastic/kibana/archive/refs/tags/v{{ kibana_version }}.tar.gz"
+        dest: "/tmp/kibana-{{ kibana_version }}.tar.gz"
         mode: 0755
         timeout: 60
         force: true
@@ -97,7 +93,7 @@
       become: true
       ansible.builtin.unarchive:
         copy: false
-        src: "/tmp/kibana-{{ kibana_version }}-linux-x86_64.tar.gz"
+        src: "/tmp/kibana-{{ kibana_version }}.tar.gz"
         dest: "{{ kibana_home }}"
         extra_opts: [--strip-components=1]
         creates: "{{ kibana_home }}/bin/kibana"
