@@ -15,13 +15,13 @@
       tags: java
     - name: Ensure installation dir exists
       become: true
-      file:
+      ansible.builtin.file:
         state: directory
         path: "{{ java_home }}"
       tags: java
     - name: Extract java in the installation directory
       become: true
-      unarchive:
+      ansible.builtin.unarchive:
         copy: false
         src: /tmp/jdk-{{ java_jdk_version }}.tar.gz
         dest: "{{ java_home }}"
